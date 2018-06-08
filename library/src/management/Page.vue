@@ -1,10 +1,15 @@
 <template lang="pug">
-  div
+  el-row
     div(id="scene" class="scene")
       div(data-depth="0")
       div(data-depth="0.2")
         div(id="bg")
-    el-row
+    el-col(:span="8" :offset="6")
+      el-form(
+        ref="form"
+        label-width="80px"
+        )
+        el-form-item(label="用户名：")
 </template>
 
 <script>
@@ -32,13 +37,12 @@ export default {
 }
 </script>
 
-<style lang="css">
-.scene {
+<style scoped lang="css">
+.el-row, .scene {
   position: absolute;
   top: 0;
-  left: 50%;
-  width: 1500px;
-  margin-left: -750px;
+  left: 0;
+  width: 100%;
   height: 100%;
 }
 .scene div {
@@ -54,9 +58,8 @@ export default {
   background: url(../assets/background.jpg) no-repeat center center;
   background-size: cover;
 }
-#img1 {
+.el-form {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  background-color: #fff;
 }
 </style>
