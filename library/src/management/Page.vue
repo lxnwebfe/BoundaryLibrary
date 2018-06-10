@@ -4,16 +4,21 @@
       div(data-depth="0")
       div(data-depth="0.2")
         div(id="bg")
-    el-col(:span="8" :offset="6")
+    el-col
       el-form(
         ref="form"
-        label-width="80px"
         )
-        el-form-item(label="用户名：")
+        el-form-item
+          el-input(placeholder="用户名：")
+        el-form-item
+          el-input(placeholder="密 码：")
+        el-form-item
+          el-button(type="success") 登录
 </template>
 
 <script>
 import Parallax from 'parallax-js'
+import axiosAction from '@/commonConfig/axiosConfig'
 export default {
   data () {
     return {
@@ -33,6 +38,11 @@ export default {
     let scene = document.getElementById('scene')
     let parallaxInstance = new Parallax(scene)
     console.log(parallaxInstance)
+    axiosAction.get('/users/query')
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => console.log(err))
   }
 }
 </script>
@@ -55,11 +65,16 @@ export default {
   left: 50%;
   width: 100%;
   height: 100%;
-  background: url(../assets/background.jpg) no-repeat center center;
+  background: url(../assets/bg2.jpg) no-repeat center center;
   background-size: cover;
 }
 .el-form {
   position: absolute;
+  top: 50%;
+  right: 10%;
+  width: 340px;
+  min-height: 400px;
+  margin-top: -200px;
   background-color: #fff;
 }
 </style>
