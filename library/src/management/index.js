@@ -1,6 +1,6 @@
 import Page from './Page'
 const routes = {
-  path: '/',
+  path: '/management',
   name: 'management',
   component: Page
 }
