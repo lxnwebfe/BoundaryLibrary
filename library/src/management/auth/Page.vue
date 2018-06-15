@@ -13,7 +13,10 @@
         el-form-item
           el-input(placeholder="密 码：")
         el-form-item
-          el-button(type="success") 登录
+          el-button(
+            type="success"
+            @click="login"
+            ) 登录
 </template>
 
 <script>
@@ -43,6 +46,11 @@ export default {
         console.log(res)
       })
       .catch(err => console.log(err))
+  },
+  methods: {
+    login () {
+      this.$router.push('/management/books')
+    }
   }
 }
 </script>
@@ -65,7 +73,7 @@ export default {
   left: 50%;
   width: 100%;
   height: 100%;
-  background: url(../../assets/bg.jpg) no-repeat center center;
+  background: url(../../assets/img/bg.jpg) no-repeat center center;
   background-size: cover;
 }
 .el-form {
