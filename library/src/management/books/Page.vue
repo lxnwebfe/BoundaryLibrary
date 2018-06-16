@@ -18,9 +18,26 @@
           <span>{{item.name}} {{item.date}}</span>
           <span>{{item.author}}</span>
         </p>
-        <el-button type="success" plain>我要借阅</el-button>
+        <el-button type="success" plain @click="showBorrowDialog=true">我要借阅</el-button>
       </el-col>
     </el-row>
+    <el-dialog
+      title="我要借阅"
+      :visible.sync="showBorrowDialog"
+      width="30%"
+      center>
+      <el-form size="mini">
+        <el-form-item label="借阅人：">夜风清吟</el-form-item>
+        <el-form-item label="借阅书籍：">天才在左疯子在右(完整版)</el-form-item>
+        <el-form-item label="借阅数量：">
+          <el-input-number v-model="borrowNum" size="mini" :min="1" :max="3"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showBorrowDialog=false">取 消</el-button>
+        <el-button type="primary" @click="borrow">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -29,6 +46,8 @@ export default {
   data () {
     return {
       search: '',
+      showBorrowDialog: false,
+      borrowNum: 1,
       booksData: [
         {
           bookId: 1,
@@ -55,6 +74,13 @@ export default {
           bookId: val
         }
       })
+    },
+    borrow () {
+      this.$message({
+        message: '借阅成功',
+        type: 'success'
+      })
+      this.showBorrowDialog = false
     }
   }
 }
@@ -63,7 +89,7 @@ export default {
 <style lang="css">
 .results {
 }
-.results > p{
+.results > p {
   position: relative;
 }
 .results > div {
