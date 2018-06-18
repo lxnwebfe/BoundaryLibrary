@@ -1,7 +1,7 @@
 import Page from './Page'
 const routes = {
-  path: 'books',
-  name: 'books',
+  name: 'addBooks',
+  path: 'add',
   component: Page
 }
 export default routes

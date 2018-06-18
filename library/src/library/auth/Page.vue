@@ -9,9 +9,9 @@
         ref="form"
         )
         el-form-item
-          el-input(placeholder="用户名：")
+          el-input(placeholder="用户名：" v-model="form.userName")
         el-form-item
-          el-input(placeholder="密 码：")
+          el-input(placeholder="密 码：" v-model="form.userPsd")
         el-form-item
           el-button(
             type="success"
@@ -26,7 +26,11 @@ export default {
   data () {
     return {
       innerWidth: (window.innerWidth + 100),
-      innerHeight: (window.innerHeight + 40)
+      innerHeight: (window.innerHeight + 40),
+      form: {
+        userName: '',
+        userPsd: ''
+      }
     }
   },
   components: {
@@ -41,15 +45,18 @@ export default {
     let scene = document.getElementById('scene')
     let parallaxInstance = new Parallax(scene)
     console.log(parallaxInstance)
-    axiosAction.get('/users/query')
-      .then(res => {
-        console.log(res)
-      })
-      .catch(err => console.log(err))
   },
   methods: {
     login () {
-      this.$router.push('/management/books')
+      axiosAction.post('/users/login', {
+        userName: this.form.userName,
+        userPsd: this.form.userPsd
+      })
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => console.log(err))
+      // this.$router.push('/library/books')
     }
   }
 }

@@ -11,14 +11,14 @@
     </el-row>
     <el-row class="content" :gutter="20">
       <el-col :span="6" v-for="item in booksData" :key="item.id" class="results">
-        <div @click="enterDetail(item.bookId)">
-          <img :src="item.coverUrl" alt="" ondragstart="return false">
+        <div @click="enterDetail(item.id)">
+          <img :src="item.bookImageUrl" alt="" ondragstart="return false">
         </div>
         <p>
-          <span>{{item.name}} {{item.date}}</span>
-          <span>{{item.author}}</span>
+          <span>{{item.bookName}} {{item.bookDate}}</span>
+          <span>{{item.bookAuthor}}</span>
         </p>
-        <el-button type="success" plain @click="showBorrowDialog=true">我要借阅</el-button>
+        <el-button type="success" plain @click="openBorrowBox('root', item)">我要借阅</el-button>
       </el-col>
     </el-row>
     <el-dialog
@@ -27,8 +27,8 @@
       width="30%"
       center>
       <el-form size="mini">
-        <el-form-item label="借阅人：">夜风清吟</el-form-item>
-        <el-form-item label="借阅书籍：">天才在左疯子在右(完整版)</el-form-item>
+        <el-form-item label="借阅人：">root</el-form-item>
+        <el-form-item label="借阅书籍：">{{borrowBoxData.bookName}}</el-form-item>
         <el-form-item label="借阅数量：">
           <el-input-number v-model="borrowNum" size="mini" :min="1" :max="3"></el-input-number>
         </el-form-item>
@@ -42,31 +42,30 @@
 </template>
 
 <script>
+import axiosAction from '@/commonConfig/axiosConfig'
 export default {
   data () {
     return {
       search: '',
       showBorrowDialog: false,
       borrowNum: 1,
-      booksData: [
-        {
-          bookId: 1,
-          name: '天才在左疯子在右(完整版)',
-          date: '2016-01-01',
-          author: '高铭',
-          coverUrl: '/static/1.jpg'
-        },
-        {
-          bookId: 2,
-          name: '罗生门',
-          date: '2017-07-25',
-          author: '芥川龙之介',
-          coverUrl: '/static/2.jpg'
-        }
-      ]
+      booksData: [],
+      borrowBoxData: {}
     }
   },
+  mounted () {
+    this.queryBooks()
+  },
   methods: {
+    queryBooks () {
+      axiosAction.get('/books/query')
+        .then(res => {
+          this.booksData = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     enterDetail (val) {
       this.$router.push({
         name: 'bookDetail',
@@ -75,12 +74,31 @@ export default {
         }
       })
     },
+    openBorrowBox (userName, item) {
+      this.borrowBoxData = {}
+      this.borrowBoxData = item
+      this.showBorrowDialog = true
+    },
     borrow () {
-      this.$message({
-        message: '借阅成功',
-        type: 'success'
+      axiosAction.post('/users/borrowing', {
+        uid: 1,
+        bookName: this.borrowBoxData.bookName,
+        bookAuthor: this.borrowBoxData.bookAuthor,
+        bookType: this.borrowBoxData.bookType,
+        bookImageUrl: this.borrowBoxData.bookImageUrl,
+        bookInventory: this.borrowBoxData.bookInventory,
+        bookDate: this.borrowBoxData.bookDate,
+        bookScore: this.borrowNum
+      }).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
       })
-      this.showBorrowDialog = false
+      // this.$message({
+      //   message: '借阅成功',
+      //   type: 'success'
+      // })
+      // this.showBorrowDialog = false
     }
   }
 }

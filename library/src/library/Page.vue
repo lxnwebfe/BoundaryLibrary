@@ -8,12 +8,11 @@
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
-
+        <el-menu-item index="1" path="222">
+          <i class="el-icon-search"></i>
+          <span>图书检索</span>
+        </el-menu-item>
         <template v-if="permission">
-          <el-menu-item index="1" path="222">
-            <i class="el-icon-search"></i>
-            <span>图书检索</span>
-          </el-menu-item>
           <el-menu-item index="2">
             <i class="el-icon-goods"></i>
             <span>我的借阅</span>
@@ -30,6 +29,13 @@
             <i class="el-icon-search"></i>
             <span>历史查询</span>
           </el-menu-item>
+          <el-submenu index="6">
+            <template slot="title">
+              <i class="el-icon-setting"></i>
+              <span>图书管理</span>
+            </template>
+            <el-menu-item index="6-1">新增图书</el-menu-item>
+          </el-submenu>
         </template>
         <template v-else>
           <el-menu-item index="2">
@@ -79,7 +85,9 @@ export default {
     handleSelect (key, keyPath) {
       if (this.permission) {
         if (key === '1') {
-          this.$router.push('/management/books')
+          this.$router.push('/library/books')
+        } else if (key === '6-1') {
+          this.$router.push('/library/management/books/add')
         }
       }
       console.log(key, keyPath)
@@ -88,7 +96,7 @@ export default {
   watch: {
     screenHeight (val) {
       this.screenHeight = val
-      document.getElementById('left-menu').style.height = this.screenHeight + 'px'
+      document.getElementById('main').style.height = this.screenHeight + 'px'
     }
   }
 }
