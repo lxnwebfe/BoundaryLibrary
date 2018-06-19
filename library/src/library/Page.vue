@@ -119,4 +119,7 @@ export default {
 .el-aside {
   background-color: rgb(84, 92, 100);
 }
+.el-main {
+  width: 1000px;
+}
 </style>

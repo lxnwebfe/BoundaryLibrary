@@ -8,10 +8,10 @@
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
-          <img v-if="form.bookImageUrl" :src="form.bookImageUrl" class="avatar">
+          <img v-if="bookBlobUrl" :src="bookBlobUrl" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-      </el-col>
+      </el-col>{{form.bookImageUrl}}
     </el-form-item>
     <el-form-item label="图书名称：" label-width="100px" prop="bookName">
       <el-col :span="20">
@@ -57,6 +57,7 @@ import axiosAction from '@/commonConfig/axiosConfig'
 export default {
   data () {
     return {
+      bookBlobUrl: '',
       form: {
         bookName: '',
         bookAuthor: '',
@@ -88,8 +89,8 @@ export default {
     handleAvatarSuccess (res, file) {
       const array = file.response.file.path.split('\\')
       console.log(array[array.length - 1])
-      this.form.bookImageUrl = '/static/images/' + array[array.length - 1]
-      // this.form.bookImageUrl = URL.createObjectURL(file.raw)
+      this.form.bookImageUrl = '/' + array[array.length - 1]
+      this.bookBlobUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'

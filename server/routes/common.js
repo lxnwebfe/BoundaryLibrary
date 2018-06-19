@@ -17,7 +17,7 @@ var responseJSON = function (res, ret) {
 router.post('/upload', function (req, res, next) {
   var form = new formidable.IncomingForm({
     encoding: 'utf-8',
-    uploadDir: '/BoundaryLibrary/library/static/images',
+    uploadDir: '/BoundaryLibrary/server/public/images',
     keepExtensions:true
   })
   form.parse(req, function(err, fields, files) {

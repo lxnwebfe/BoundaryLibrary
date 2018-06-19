@@ -1,25 +1,19 @@
 <template lang="html">
   <div>
-    <el-form inline>
+    <el-form class="searchForm" inline>
       <el-row>
-        <el-col :span="7">
-          <el-form-item label="图书名称">
-            <el-input v-model="searchForm.bookName" placeholder="请输入图书名称" clearable></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="图书分类">
-            <el-select v-model="searchForm.bookClassification" placeholder="请选择图书分类">
-              <el-option v-for="item in bookClassification" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="6">
+        <el-form-item class="form-item" label="图书名称">
+          <el-input v-model="searchForm.bookName" placeholder="请输入图书名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item class="form-item" label="图书分类">
+          <el-select v-model="searchForm.bookClassification" placeholder="请选择图书分类">
+            <el-option v-for="item in bookClassification" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="form-item" label="">
           <el-button type="primary" class="btn">搜索</el-button>
           <el-button plain class="btn">重置</el-button>
-        </el-col>
+        </el-form-item>
       </el-row>
     </el-form>
     <el-row class="content" :gutter="20">
@@ -126,7 +120,12 @@ export default {
     queryBooks () {
       axiosAction.get('/books/query')
         .then(res => {
+          console.log(res.data)
+          for (let i in res.data) {
+            res.data[i].bookImageUrl = process.env.BOOK_BASE_URL + res.data[i].bookImageUrl
+          }
           this.booksData = res.data
+          console.log(process.env.BOOK_BASE_URL)
         })
         .catch(err => {
           console.log(err)
@@ -171,13 +170,20 @@ export default {
 </script>
 
 <style scoped lang="css">
-.el-form--inline .el-form-item {
+.searchForm {
+  display: flex;
+  margin-bottom: 60px;
+}
+.form-item {
+  width: 300px;
+  justify-content: flex-start;
   margin-bottom: 0
 }
 .btn {
   width: 120px;
 }
 .results {
+  margin-bottom: 30px;
 }
 .results > p {
   position: relative;
@@ -192,5 +198,6 @@ export default {
 .results > p > span {
   display: block;
   width: 100%;
+  line-height: 24px;
 }
 </style>
