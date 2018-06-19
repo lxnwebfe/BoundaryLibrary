@@ -17,14 +17,14 @@
             <i class="el-icon-goods"></i>
             <span>我的借阅</span>
           </el-menu-item>
-          <el-menu-item index="3">
+          <!-- <el-menu-item index="3">
             <i class="el-icon-time"></i>
             <span>归还图书</span>
           </el-menu-item>
           <el-menu-item index="4">
             <i class="el-icon-news"></i>
             <span>预订图书</span>
-          </el-menu-item>
+          </el-menu-item> -->
           <el-menu-item index="5">
             <i class="el-icon-search"></i>
             <span>历史查询</span>
@@ -66,7 +66,7 @@
 export default {
   data () {
     return {
-      defaultActive: '1',
+      defaultActive: '',
       screenHeight: document.body.clientHeight,
       permission: '1'
     }
@@ -77,17 +77,30 @@ export default {
       this.screenHeight = document.body.clientHeight
       return this.screenHeight
     }
+    this.currentActive()
   },
   methods: {
     handleSelect (key, keyPath) {
       if (this.permission) {
         if (key === '1') {
           this.$router.push('/library/books')
+        } else if (key === '2') {
+          this.$router.push('/library/borrow')
         } else if (key === '6') {
           this.$router.push('/library/management/books')
         }
       }
       console.log(key, keyPath)
+    },
+    currentActive () {
+      let path = this.$route.path
+      if (path.indexOf('/library/books') !== -1) {
+        this.defaultActive = '1'
+      } else if (path.indexOf('/library/borrow') !== -1) {
+        this.defaultActive = '2'
+      } else if (path.indexOf('/library/management/books') !== -1) {
+        this.defaultActive = '6'
+      }
     }
   },
   watch: {

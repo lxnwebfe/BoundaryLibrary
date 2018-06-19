@@ -1,14 +1,27 @@
 <template lang="html">
   <div>
-    <el-row>
-      <el-col>
-        <el-form>
-          <el-form-item label="">
-            <el-input v-model="search" placeholder="请输入图书名称、作者" clearable></el-input>
+    <el-form inline>
+      <el-row>
+        <el-col :span="7">
+          <el-form-item label="图书名称">
+            <el-input v-model="searchForm.bookName" placeholder="请输入图书名称" clearable></el-input>
           </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="图书分类">
+            <el-select v-model="searchForm.bookClassification" placeholder="请选择图书分类">
+              <el-option v-for="item in bookClassification" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-button type="primary" class="btn">搜索</el-button>
+          <el-button plain class="btn">重置</el-button>
+        </el-col>
+      </el-row>
+    </el-form>
     <el-row class="content" :gutter="20">
       <el-col :span="6" v-for="item in booksData" :key="item.id" class="results">
         <div @click="enterDetail(item.id)">
@@ -46,11 +59,64 @@ import axiosAction from '@/commonConfig/axiosConfig'
 export default {
   data () {
     return {
-      search: '',
+      searchForm: {
+        bookName: '',
+        bookClassification: ''
+      },
       showBorrowDialog: false,
       borrowNum: 1,
       booksData: [],
-      borrowBoxData: {}
+      borrowBoxData: {},
+      bookClassification: [
+        {
+          label: '文学',
+          value: '1'
+        },
+        {
+          label: '经济管理',
+          value: '2'
+        },
+        {
+          label: '少儿',
+          value: '3'
+        },
+        {
+          label: '人文社科',
+          value: '4'
+        },
+        {
+          label: '生活',
+          value: '5'
+        },
+        {
+          label: '教材教辅考试',
+          value: '6'
+        },
+        {
+          label: '励志与成功',
+          value: '7'
+        },
+        {
+          label: '科技',
+          value: '8'
+        },
+        {
+          label: '生活',
+          value: '9'
+        },
+        {
+          label: '艺术与摄影',
+          value: '10'
+        },
+        {
+          label: '体育',
+          value: '11'
+        },
+        {
+          label: '期刊杂志',
+          value: '12'
+        }
+      ]
     }
   },
   mounted () {
@@ -104,7 +170,13 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style scoped lang="css">
+.el-form--inline .el-form-item {
+  margin-bottom: 0
+}
+.btn {
+  width: 120px;
+}
 .results {
 }
 .results > p {
