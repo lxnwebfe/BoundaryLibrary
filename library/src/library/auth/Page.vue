@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     login () {
+      this.$router.push('/library/books')
       axiosAction.post('/users/login', {
         userName: this.form.userName,
         userPsd: this.form.userPsd
@@ -56,7 +57,6 @@ export default {
           console.log(res)
         })
         .catch(err => console.log(err))
-      // this.$router.push('/library/books')
     }
   }
 }

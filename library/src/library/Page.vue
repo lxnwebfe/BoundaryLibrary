@@ -1,6 +1,6 @@
 <template lang="html">
   <el-container>
-    <el-aside width="200px">
+    <el-aside width="160px">
       <el-menu
         :default-active="defaultActive"
         class="el-menu-demo"
@@ -29,13 +29,10 @@
             <i class="el-icon-search"></i>
             <span>历史查询</span>
           </el-menu-item>
-          <el-submenu index="6">
-            <template slot="title">
-              <i class="el-icon-setting"></i>
-              <span>图书管理</span>
-            </template>
-            <el-menu-item index="6-1">新增图书</el-menu-item>
-          </el-submenu>
+          <el-menu-item index="6">
+            <i class="el-icon-setting"></i>
+            <span>图书管理</span>
+          </el-menu-item>
         </template>
         <template v-else>
           <el-menu-item index="2">
@@ -86,8 +83,8 @@ export default {
       if (this.permission) {
         if (key === '1') {
           this.$router.push('/library/books')
-        } else if (key === '6-1') {
-          this.$router.push('/library/management/books/add')
+        } else if (key === '6') {
+          this.$router.push('/library/management/books')
         }
       }
       console.log(key, keyPath)
