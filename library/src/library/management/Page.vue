@@ -1,13 +1,3 @@
 <template lang="html">
-  <div class="">
-    3
-  </div>
+  <router-view/>
 </template>
-
-<script>
-export default {
-}
-</script>
-
-<style lang="css">
-</style>

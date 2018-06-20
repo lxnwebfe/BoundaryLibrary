@@ -3,7 +3,7 @@ import Page from './Page'
 import AddBooksPage from './add/index'
 const routes = {
   name: 'managementBooks',
-  path: 'management/books',
+  path: 'books',
   component: Page,
   children: []
 }

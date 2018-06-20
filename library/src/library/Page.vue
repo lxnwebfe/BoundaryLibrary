@@ -25,10 +25,6 @@
             <i class="el-icon-news"></i>
             <span>预订图书</span>
           </el-menu-item> -->
-          <el-menu-item index="5">
-            <i class="el-icon-search"></i>
-            <span>历史查询</span>
-          </el-menu-item>
           <el-menu-item index="6">
             <i class="el-icon-setting"></i>
             <span>图书管理</span>

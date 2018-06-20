@@ -2,10 +2,13 @@
   <div>
     <el-form class="searchForm" inline>
       <el-row>
-        <el-form-item class="form-item" label="图书名称">
+        <el-form-item class="form-item" label="">
           <el-input v-model="searchForm.bookName" placeholder="请输入图书名称" clearable></el-input>
         </el-form-item>
-        <el-form-item class="form-item" label="图书分类">
+        <el-form-item class="form-item" label="">
+          <el-input v-model="searchForm.bookAuthor" placeholder="请输入作者名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item class="form-item" label="">
           <el-select v-model="searchForm.bookClassification" placeholder="请选择图书分类">
             <el-option v-for="item in bookClassification" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
@@ -175,7 +178,8 @@ export default {
   margin-bottom: 60px;
 }
 .form-item {
-  width: 300px;
+  /*width: 340px;*/
+  flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 0
 }
