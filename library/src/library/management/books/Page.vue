@@ -18,7 +18,7 @@
       </el-form-item>
     </el-form>
     <el-row class="add-book-row">
-      <el-button type="danger">新增图书</el-button>
+      <el-button type="danger" @click="showAddBooksDialog=true">新增图书</el-button>
     </el-row>
     <el-row>
       <el-table
@@ -66,6 +66,10 @@
         </el-table-column>
       </el-table>
     </el-row>
+    <el-dialog
+      :visible.sync="showAddBooksDialog">
+      <AddBooksPage/>
+    </el-dialog>
   </div>
   <!-- <el-row>
     <el-col>
@@ -142,25 +146,14 @@ export default {
           value: '12'
         }
       ],
-      resultData: [
-        {
-          id: '1',
-          bookName: '222',
-          bookAuthor: '444',
-          bookDate: '2018-06-20',
-          bookType: '心理学',
-          bookImageUrl: 'aaa'
-        }
-      ]
+      showAddBooksDialog: false,
+      resultData: process.env.TEST_DATA
     }
   },
   components: {
     AddBooksPage
   },
   methods: {
-    handleClick (tab, event) {
-      console.log(tab, event)
-    }
   }
 }
 </script>

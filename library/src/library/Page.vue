@@ -17,33 +17,19 @@
             <i class="el-icon-goods"></i>
             <span>我的借阅</span>
           </el-menu-item>
-          <!-- <el-menu-item index="3">
-            <i class="el-icon-time"></i>
-            <span>归还图书</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-news"></i>
-            <span>预订图书</span>
-          </el-menu-item> -->
           <el-menu-item index="6">
             <i class="el-icon-setting"></i>
             <span>图书管理</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <span>读者管理</span>
           </el-menu-item>
         </template>
         <template v-else>
           <el-menu-item index="2">
             <i class="el-icon-setting"></i>
             <span>系统管理</span>
-          </el-menu-item>
-          <el-menu-item index="3">
-            <template slot="title">
-              <i class="el-icon-setting"></i>
-              <span>图书管理</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span>读者管理</span>
           </el-menu-item>
           <el-menu-item index="5">
             <i class="el-icon-setting"></i>
@@ -84,6 +70,8 @@ export default {
           this.$router.push('/library/borrow')
         } else if (key === '6') {
           this.$router.push('/library/management/books')
+        } else if (key === '4') {
+          this.$router.push('/library/management/users')
         }
       }
       console.log(key, keyPath)
@@ -96,6 +84,8 @@ export default {
         this.defaultActive = '2'
       } else if (path.indexOf('/library/management/books') !== -1) {
         this.defaultActive = '6'
+      } else if (path.indexOf('/library/management/users') !== -1) {
+        this.defaultActive = '4'
       }
     }
   },
