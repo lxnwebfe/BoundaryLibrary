@@ -1,5 +1,5 @@
 <template lang="html">
-  <el-form :model="form" :rules="rules" ref="form" >
+  <el-form :model="form" :rules="rules" ref="form">
     <el-form-item label="图书封面：" label-width="100px" prop="bookImageUrl">
       <el-upload
         class="avatar-uploader"
@@ -55,8 +55,7 @@
     </el-form-item>
     <el-form-item label="" style="text-align: center">
       <el-col>
-        <el-button type="primary" @click="addBooks('form')">添加图书</el-button>
-        <el-button type="info" @click="reset('form')" plain>重置</el-button>
+        <el-button type="primary" @click="updateBooks('form')">更新图书</el-button>
       </el-col>
     </el-form-item>
   </el-form>
@@ -65,19 +64,21 @@
 <script>
 import axiosAction from '@/commonConfig/axiosConfig'
 export default {
+  props: ['currentBooksData'],
   data () {
     return {
-      bookBlobUrl: '',
       form: {
-        bookName: '',
-        bookAuthor: '',
-        bookType: '',
+        id: this.currentBooksData.id,
+        bookName: this.currentBooksData.bookName,
+        bookAuthor: this.currentBooksData.bookAuthor,
+        bookType: this.currentBooksData.bookType,
         bookImageUrl: '',
-        bookInventory: 0,
-        bookDate: '',
-        press: '',
-        unitPrice: ''
+        bookInventory: this.currentBooksData.bookInventory,
+        bookDate: this.currentBooksData.bookDate,
+        press: this.currentBooksData.press,
+        unitPrice: this.currentBooksData.unitPrice
       },
+      bookBlobUrl: this.currentBooksData.bookImageUrl,
       rules: {
         bookName: [
           {required: true, message: '请输入书名', trigger: 'blur'}
@@ -104,7 +105,14 @@ export default {
       bookClassification: process.env.BOOKS_TYPE
     }
   },
+  mounted () {
+    this.initBookImageUrl()
+  },
   methods: {
+    initBookImageUrl () {
+      const array = this.currentBooksData.bookImageUrl.split('/')
+      this.form.bookImageUrl = '/' + array[array.length - 1]
+    },
     handleAvatarSuccess (res, file) {
       const array = file.response.file.path.split('\\')
       this.form.bookImageUrl = '/' + array[array.length - 1]
@@ -121,23 +129,26 @@ export default {
       }
       return isJPG && isLt2M
     },
-    addBooks (formName) {
+    updateBooks (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          axiosAction.post('/books/add', {
+          axiosAction.post('/books/update', {
+            id: this.form.id,
             bookName: this.form.bookName,
             bookAuthor: this.form.bookAuthor,
             bookType: this.form.bookType,
             bookImageUrl: this.form.bookImageUrl,
             bookInventory: this.form.bookInventory,
-            bookDate: this.form.bookDate
+            bookDate: this.form.bookDate,
+            press: this.form.press,
+            unitPrice: this.form.unitPrice
           })
             .then(res => {
               this.$message({
-                message: '添加成功',
+                message: '更新成功',
                 type: 'success'
               })
-              this.$emit('closeAddBooksDialog', 'false')
+              this.$emit('closeUpdateBooksDialog', 'false')
             })
             .catch(err => {
               console.log(err)
@@ -147,9 +158,6 @@ export default {
           return false
         }
       })
-    },
-    reset (formName) {
-      this.$refs[formName].resetFields()
     }
   }
 }

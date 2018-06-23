@@ -117,18 +117,16 @@ export default {
     }
   },
   mounted () {
-    this.queryBooks()
+    this.queryBooksList()
   },
   methods: {
-    queryBooks () {
+    queryBooksList () {
       axiosAction.get('/books/query')
         .then(res => {
-          console.log(res.data)
           for (let i in res.data) {
             res.data[i].bookImageUrl = process.env.BOOK_BASE_URL + res.data[i].bookImageUrl
           }
           this.booksData = res.data
-          console.log(process.env.BOOK_BASE_URL)
         })
         .catch(err => {
           console.log(err)
@@ -158,7 +156,14 @@ export default {
         bookDate: this.borrowBoxData.bookDate,
         bookScore: this.borrowNum
       }).then(res => {
-        console.log(res)
+        let data = res.data
+        if (data.code === '200') {
+          this.$message({
+            message: '借阅成功',
+            type: 'success'
+          })
+          this.showBorrowDialog = false
+        }
       }).catch(err => {
         console.log(err)
       })

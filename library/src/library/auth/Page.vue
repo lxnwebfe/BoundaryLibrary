@@ -48,13 +48,15 @@ export default {
   },
   methods: {
     login () {
-      this.$router.push('/library/books')
       axiosAction.post('/users/login', {
         userName: this.form.userName,
         userPsd: this.form.userPsd
       })
         .then(res => {
-          console.log(res)
+          let code = res.data.code
+          if (code !== '400' && code !== '201') {
+            this.$cookies.get('userName') === 'root' ? this.$router.push('/library/management/books') : this.$router.push('/library/books')
+          }
         })
         .catch(err => console.log(err))
     }

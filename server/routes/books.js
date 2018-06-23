@@ -37,16 +37,76 @@ router.get('/query', function (req, res, next) {
    });
  })
 })
+// 查询图书
+router.get('/queryBooks', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(`SELECT * FROM BOOKS WHERE bookName LIKE "%${param.bookName}%" AND  bookAuthor LIKE "%${param.bookAuthor}%" AND bookType LIKE "%${param.bookType}%"`, function (err, result) {
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+
 // 添加图书
 router.post('/add', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.body;
-    connection.query(booksSQL.addBooks, [param.bookName, param.bookAuthor, param.bookType, param.bookImageUrl, param.bookInventory, param.bookDate], function (err, result) {
+    connection.query(booksSQL.addBooks, [param.bookName, param.bookAuthor, param.bookType, param.bookImageUrl, param.bookInventory, param.bookDate, param.press, param.unitPrice], function (err, result) {
       if(result) {
         result = {
           code: 200,
           msg:'增加成功'
+        };
+      } else {
+        result = {
+          err: err
+        }
+      }
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+//更新图书
+router.post('/update', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.body;
+    connection.query(booksSQL.updateBooks, [param.bookName, param.bookAuthor, param.bookType, param.bookImageUrl, param.bookInventory, param.bookDate, param.press, param.unitPrice, param.id], function (err, result) {
+      if(result) {
+        result = {
+          code: 200,
+          msg:'更新成功'
+        };
+      } else {
+        result = {
+          err: err
+        }
+      }
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+//删除图书
+router.post('/delete', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.body;
+    connection.query(booksSQL.deleteBooks, [param.id], function (err, result) {
+      if(result) {
+        result = {
+          code: 200,
+          msg:'删除成功'
         };
       } else {
         result = {

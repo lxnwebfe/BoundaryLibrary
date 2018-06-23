@@ -36,25 +36,23 @@ router.use(session({
 router.post('/login', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     var param = req.body;
-    connection.query(userSQL.queryUser, [param.userName, param.userPsd], function (err, result) {
-      var sess = req.session;
+    connection.query(userSQL.queryLoginUser, [param.userName, param.userPsd], function (err, result) {
       if (result&&result.length>0) {
         // req.session._userName = param.userName
         req.session.regenerate(function(err) {
          if(err){
            return result = {
+             code: '-201',
              msg: '登录失败'
            }
          } else {
-           req.session.userName = param.userName
-           res.cookie('userName', param.userName, {expires: new Date(Date.now() + 15 * 60 * 1000), httpOnly: true, path: '/'});
-           console.log(req.session)
-           console.log(req.cookies)
+           res.cookie('userName', param.userName, {expires: new Date(Date.now() + 15 * 60 * 1000)});
            res.end()
          }
        });
       } else {
         result = {
+          code: '400',
           msg: '用户名或密码错误'
         }
         responseJSON(res, result)
@@ -104,6 +102,103 @@ router.post('/borrowing', function (req, res, next) {
       connection.release()
     })
   })
+})
+// 用户列表查询
+router.get('/queryUsersList', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(userSQL.queryAll, function (err, result) {
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+// 用户查询
+router.get('/queryUsers', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(`SELECT * FROM user WHERE userName LIKE "%${param.userName}%" AND  sex LIKE "%${param.sex}%" AND phone LIKE "%${param.phone}%" AND registrDate LIKE "%${param.registrDate}%"`, function (err, result) {
+    //以json形式，把操作结果返回给前台页面
+    console.log(result)
+    responseJSON(res, result);
+    //释放连接
+    connection.release()
+   });
+ })
+})
+// 添加用户
+router.post('/add', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.body;
+    connection.query(userSQL.addUser2, [param.userName, param.userPsd, param.sex, param.phone, param.idCard, param.registrDate, param.userLevel], function (err, result) {
+      if(result) {
+        result = {
+          code: 200,
+          msg:'添加成功'
+        };
+      } else {
+        result = {
+          err: err
+        }
+      }
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+
+// 更新用户信息
+router.post('/update', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.body;
+    connection.query(userSQL.updateUser, [param.userName, param.userPsd, param.sex, param.phone, param.idCard, param.id], function (err, result) {
+      if(result) {
+        result = {
+          code: 200,
+          msg:'更新成功'
+        };
+      } else {
+        result = {
+          err: err
+        }
+      }
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+// 删除用户
+router.post('/delete', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.body;
+    connection.query(userSQL.deleteUser, [param.id], function (err, result) {
+      if(result) {
+        result = {
+          code: 200,
+          msg:'删除成功'
+        };
+      } else {
+        result = {
+          err: err
+        }
+      }
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
 })
 /* GET users listing. */
 router.get('/', function(req, res, next) {
