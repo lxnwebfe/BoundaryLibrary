@@ -94,7 +94,8 @@ router.get('/queryBookInventory', function (req, res, next) {
 router.post('/borrowing', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     var param = req.body;
-    connection.query(`INSERT INTO USERBORROWING(uid, bookId, bookName, bookAuthor, bookImageUrl, bookDate) VALUES ("${param.uid}", "${param.bookId}", "${param.bookName}", "${param.bookAuthor}", "${param.bookImageUrl}", "${param.bookDate}");
+    connection.query(`INSERT INTO USERBORROWING(uid, bookId, bookName, bookAuthor, bookImageUrl, bookDate, borrowingDateTime) VALUES ("${param.uid}", "${param.bookId}", "${param.bookName}", "${param.bookAuthor}", "${param.bookImageUrl}", "${param.bookDate}", "${param.borrowingDateTime}");
+      INSERT INTO USERBORROWHISTORY(uid, bookId, bookName, bookAuthor, bookImageUrl, bookDate, borrowingDateTime, press, unitPrice, bookType) VALUES ("${param.uid}", "${param.bookId}", "${param.bookName}", "${param.bookAuthor}", "${param.bookImageUrl}", "${param.bookDate}", "${param.borrowingDateTime}", "${param.press}", "${param.unitPrice}", "${param.bookType}");
       UPDATE BOOKS SET bookInventory=bookInventory-1 WHERE id="${param.bookId}"`, function (err, result) {
       console.log(err, result)
       if (result) {
@@ -107,6 +108,51 @@ router.post('/borrowing', function (req, res, next) {
       connection.release()
     })
   })
+})
+// 查询用户借阅图书列表
+router.get('/queryUserBorrowingList', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(userSQL.queryUserBorrowingList, [param.uid], function (err, result) {
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
+// 用户归还图书
+router.post('/returnBook', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    var param = req.body;
+    connection.query(`DELETE FROM USERBORROWING WHERE uid="${param.uid}" AND bookId="${param.bookId}" AND borrowingDateTime="${param.borrowingDateTime}";
+      UPDATE BOOKS SET bookInventory=bookInventory+1 WHERE id="${param.bookId}"`, function (err, result) {
+      console.log(err, result)
+      if (result) {
+        result = {
+          code: 200,
+          msg: '归还成功'
+        }
+      }
+      responseJSON(res, result)
+      connection.release()
+    })
+  })
+})
+// 用户借阅历史查询
+router.get('/queryUserBorrowHistoryList', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(userSQL.queryUserBorrowHistoryList, [param.uid], function (err, result) {
+      console.log(err, result)
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
 })
 // 用户列表查询
 router.get('/queryUsersList', function (req, res, next) {

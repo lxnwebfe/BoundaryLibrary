@@ -126,7 +126,6 @@ export default {
       const array = this.borrowBoxData.bookImageUrl.split('/')
       this.bookImageUrl = '/' + array[array.length - 1]
       this.showBorrowDialog = true
-      console.log('当前库存：', this.borrowBoxData.bookInventory)
     },
     borrow () {
       axiosAction.get('/users/queryBookInventory', {
@@ -143,7 +142,11 @@ export default {
               bookName: this.borrowBoxData.bookName,
               bookAuthor: this.borrowBoxData.bookAuthor,
               bookImageUrl: this.bookImageUrl,
-              bookDate: this.borrowBoxData.bookDate
+              bookDate: this.borrowBoxData.bookDate,
+              borrowingDateTime: new Date().toISOString(),
+              press: this.borrowBoxData.press,
+              unitPrice: this.borrowBoxData.unitPrice,
+              bookType: this.borrowBoxData.bookType
             }).then(res => {
               let data = res.data
               console.log(data)

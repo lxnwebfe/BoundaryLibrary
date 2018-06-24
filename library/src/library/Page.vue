@@ -15,30 +15,22 @@
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b">
-          <template v-if="userName!==''&&userName!=='root'">
-            <el-menu-item index="1" path="222">
-              <i class="el-icon-search"></i>
-              <span>图书检索</span>
-            </el-menu-item>
-            <el-menu-item index="2">
-              <i class="el-icon-goods"></i>
-              <span>我的借阅</span>
-            </el-menu-item>
-          </template>
-          <template v-else>
-            <el-menu-item index="6">
-              <i class="el-icon-setting"></i>
-              <span>图书管理</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <i class="el-icon-setting"></i>
-              <span>读者管理</span>
-            </el-menu-item>
-            <!-- <el-menu-item index="2">
-              <i class="el-icon-setting"></i>
-              <span>系统管理</span>
-            </el-menu-item> -->
-          </template>
+          <el-menu-item index="1" v-show="userName!==''&&userName!=='root'">
+            <i class="el-icon-search"></i>
+            <span>图书检索</span>
+          </el-menu-item>
+          <el-menu-item index="2" v-show="userName!==''&&userName!=='root'">
+            <i class="el-icon-goods"></i>
+            <span>我的借阅</span>
+          </el-menu-item>
+          <el-menu-item index="6" v-show="userName==='root'">
+            <i class="el-icon-setting"></i>
+            <span>图书管理</span>
+          </el-menu-item>
+          <el-menu-item index="4" v-show="userName==='root'">
+            <i class="el-icon-setting"></i>
+            <span>读者管理</span>
+          </el-menu-item>
 
         </el-menu>
       </el-aside>
@@ -62,8 +54,8 @@ export default {
       this.screenHeight = document.body.clientHeight - 60
       return this.screenHeight
     }
-    this.currentActive()
     this.$cookies.get('userName') ? this.userName = this.$cookies.get('userName') : this.userName = ''
+    this.currentActive()
   },
   methods: {
     handleSelect (key, keyPath) {
@@ -76,7 +68,7 @@ export default {
       } else if (key === '4') {
         this.$router.push('/library/management/users')
       }
-      // console.log(key, keyPath)
+      console.log(key, keyPath)
     },
     currentActive () {
       let path = this.$route.path
@@ -92,6 +84,7 @@ export default {
     },
     logout () {
       this.$cookies.remove('userName', '/')
+      this.$cookies.remove('userId', '/')
       this.$router.push('/')
     }
   },
