@@ -1,22 +1,26 @@
-<template lang="pug">
-  el-row
-    div(id="scene" class="scene")
-      div(data-depth="0")
-      div(data-depth="0.2")
-        div(id="bg")
-    el-col
-      el-form(
-        ref="form"
-        )
-        el-form-item
-          el-input(placeholder="用户名：" v-model="form.userName")
-        el-form-item
-          el-input(placeholder="密 码：" v-model="form.userPsd")
-        el-form-item
-          el-button(
-            type="success"
-            @click="login"
-            ) 登录
+<template lang="html">
+  <el-row>
+    <div id="scene" class="scene">
+      <div data-depth="0"></div>
+      <div data-depth="0.2">
+        <div id="bg"></div>
+      </div>
+    </div>
+    <el-col>
+      <el-form :model="form" :rules="rules" ref="form">
+        <h1>边界图书馆</h1>
+        <el-form-item prop="userName">
+          <el-input placeholder="用户名：" v-model="form.userName" />
+        </el-form-item>
+        <el-form-item prop="userPsd">
+          <el-input type="password" placeholder="密 码：" v-model="form.userPsd" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="login('form')">登录</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -30,6 +34,14 @@ export default {
       form: {
         userName: '',
         userPsd: ''
+      },
+      rules: {
+        userName: [
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        userPsd: [
+          {required: true, message: '请输入密码', trigger: 'blur'}
+        ]
       }
     }
   },
@@ -47,15 +59,27 @@ export default {
     console.log(parallaxInstance)
   },
   methods: {
-    login () {
-      axiosAction.post('/users/login', {
-        userName: this.form.userName,
-        userPsd: this.form.userPsd
+    login (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          axiosAction.post('/users/login', {
+            userName: this.form.userName,
+            userPsd: this.form.userPsd
+          })
+            .then(res => {
+              let code = res.data.code
+              if (code === '400') {
+                this.$message.error('用户名或密码错误')
+              } else {
+                this.$cookies.get('userName') === 'root' ? this.$router.push('/library/management/books') : this.$router.push('/library/books')
+              }
+            })
+            .catch(err => console.log(err))
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
-        .then(res => {
-          this.$cookies.get('userName') === 'root' ? this.$router.push('/library/management/books') : this.$router.push('/library/books')
-        })
-        .catch(err => console.log(err))
     }
   }
 }
@@ -85,10 +109,18 @@ export default {
 .el-form {
   position: absolute;
   top: 50%;
-  right: 10%;
+  left: 50%;
   width: 340px;
-  min-height: 400px;
-  margin-top: -200px;
-  background-color: #fff;
+  min-height: 300px;
+  margin-top: -150px;
+  margin-left: -165px;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+.el-form-item {
+  width: 80%;
+  margin-left: 10%;
+}
+.el-button {
+  width: 60%;
 }
 </style>

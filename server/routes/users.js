@@ -49,6 +49,7 @@ router.post('/login', function (req, res, next) {
          } else {
            res.cookie('userName', result[0].userName, {expires: new Date(Date.now() + 15 * 60 * 1000)});
            res.cookie('userId', result[0].id, {expires: new Date(Date.now() + 15 * 60 * 1000)});
+           res.cookie('userLevel', result[0].userLevel, {expires: new Date(Date.now() + 15 * 60 * 1000)});
            res.end()
          }
        });

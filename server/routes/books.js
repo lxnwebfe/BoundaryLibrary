@@ -37,6 +37,19 @@ router.get('/query', function (req, res, next) {
    });
  })
 })
+// 查询图书详情列表
+router.get('/queryBookDetailsList', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(`SELECT * FROM BOOKS LEFT JOIN BOOKDETAILS ON books.id=BOOKDETAILS.bookId ORDER BY books.id DESC`, function (err, result) {
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
 // 查询图书
 router.get('/queryBooks', function (req, res, next) {
   pool.getConnection(function (err, connection) {
@@ -50,13 +63,28 @@ router.get('/queryBooks', function (req, res, next) {
    });
  })
 })
+// 查询图书详细信息
+router.get('/queryBookDetails', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(`SELECT * FROM BOOKS, BOOKDETAILS WHERE books.id="${param.bookId}" AND BOOKDETAILS.bookId="${param.bookId}"`, function (err, result) {
+     //以json形式，把操作结果返回给前台页面
+     responseJSON(res, result);
+     //释放连接
+     connection.release()
+   });
+ })
+})
 
 // 添加图书
 router.post('/add', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.body;
-    connection.query(booksSQL.addBooks, [param.bookName, param.bookAuthor, param.bookType, param.bookImageUrl, param.bookInventory, param.bookDate, param.press, param.unitPrice], function (err, result) {
+    connection.query(`INSERT INTO BOOKS(bookName, bookAuthor, bookType, bookImageUrl, bookInventory, bookDate, press, unitPrice, bookScore) VALUES ("${param.bookName}", "${param.bookAuthor}", "${param.bookType}", "${param.bookImageUrl}", "${param.bookInventory}", "${param.bookDate}", "${param.press}", "${param.unitPrice}", 0);
+      INSERT INTO BOOKDETAILS(bookId, bookDescription, authorDescription) SELECT id, "${param.bookDescription}", "${param.authorDescription}" FROM BOOKS WHERE id=(SELECT id FROM BOOKS WHERE bookImageUrl="${param.bookImageUrl}")`, function (err, result) {
+      console.log(err, result)
       if(result) {
         result = {
           code: 200,
@@ -79,7 +107,9 @@ router.post('/update', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.body;
-    connection.query(booksSQL.updateBooks, [param.bookName, param.bookAuthor, param.bookType, param.bookImageUrl, param.bookInventory, param.bookDate, param.press, param.unitPrice, param.id], function (err, result) {
+    connection.query(`UPDATE BOOKS SET bookName="${param.bookName}", bookAuthor="${param.bookAuthor}", bookType="${param.bookType}", bookImageUrl="${param.bookImageUrl}", bookInventory="${param.bookInventory}", bookDate="${param.bookDate}", press="${param.press}", unitPrice="${param.unitPrice}" WHERE id="${param.bookId}";
+      UPDATE BOOKDETAILS SET bookDescription="${param.bookDescription}", authorDescription="${param.authorDescription}" WHERE bookId="${param.bookId}"`, function (err, result) {
+        console.log(err, result)
       if(result) {
         result = {
           code: 200,
@@ -102,7 +132,8 @@ router.post('/delete', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.body;
-    connection.query(booksSQL.deleteBooks, [param.id], function (err, result) {
+    connection.query(`SET FOREIGN_KEY_CHECKS = 0; DELETE FROM BOOKS WHERE (id="${param.id}"); DELETE FROM BOOKDETAILS WHERE (bookId="${param.id}"); SET FOREIGN_KEY_CHECKS = 1`, function (err, result) {
+      console.log(err, result)
       if(result) {
         result = {
           code: 200,

@@ -48,6 +48,16 @@
         <el-input v-model="form.unitPrice"></el-input>
       </el-col>
     </el-form-item>
+    <el-form-item label="图书简介：" label-width="100px" prop="bookDescription">
+      <el-col :span="20">
+        <el-input type="textarea" v-model="form.bookDescription"></el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item label="作者简介：" label-width="100px" prop="authorDescription">
+      <el-col :span="20">
+        <el-input type="textarea" v-model="form.authorDescription"></el-input>
+      </el-col>
+    </el-form-item>
     <el-form-item label="库存：" label-width="100px" prop="bookInventory">
       <el-col :span="8">
         <el-input-number v-model="form.bookInventory" :min="0"></el-input-number>
@@ -99,7 +109,9 @@ export default {
         ],
         unitPrice: [
           {required: true, message: '请输入单价', trigger: 'blur'}
-        ]
+        ],
+        bookDescription: [],
+        authorDescription: []
       },
       bookClassification: process.env.BOOKS_TYPE
     }
@@ -130,7 +142,11 @@ export default {
             bookType: this.form.bookType,
             bookImageUrl: this.form.bookImageUrl,
             bookInventory: this.form.bookInventory,
-            bookDate: this.form.bookDate
+            bookDate: this.form.bookDate,
+            press: this.form.press,
+            unitPrice: this.form.unitPrice,
+            bookDescription: this.form.bookDescription,
+            authorDescription: this.form.authorDescription
           })
             .then(res => {
               this.$message({

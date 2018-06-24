@@ -48,6 +48,16 @@
         <el-input v-model="form.unitPrice"></el-input>
       </el-col>
     </el-form-item>
+    <el-form-item label="图书简介：" label-width="100px" prop="bookDescription">
+      <el-col :span="20">
+        <el-input type="textarea" v-model="form.bookDescription"></el-input>
+      </el-col>
+    </el-form-item>
+    <el-form-item label="作者简介：" label-width="100px" prop="authorDescription">
+      <el-col :span="20">
+        <el-input type="textarea" v-model="form.authorDescription"></el-input>
+      </el-col>
+    </el-form-item>
     <el-form-item label="库存：" label-width="100px" prop="bookInventory">
       <el-col :span="8">
         <el-input-number v-model="form.bookInventory" :min="0"></el-input-number>
@@ -68,7 +78,7 @@ export default {
   data () {
     return {
       form: {
-        id: this.currentBooksData.id,
+        bookId: this.currentBooksData.bookId,
         bookName: this.currentBooksData.bookName,
         bookAuthor: this.currentBooksData.bookAuthor,
         bookType: this.currentBooksData.bookType,
@@ -76,7 +86,9 @@ export default {
         bookInventory: this.currentBooksData.bookInventory,
         bookDate: this.currentBooksData.bookDate,
         press: this.currentBooksData.press,
-        unitPrice: this.currentBooksData.unitPrice
+        unitPrice: this.currentBooksData.unitPrice,
+        bookDescription: this.currentBooksData.bookDescription,
+        authorDescription: this.currentBooksData.authorDescription
       },
       bookBlobUrl: this.currentBooksData.bookImageUrl,
       rules: {
@@ -100,7 +112,9 @@ export default {
         ],
         unitPrice: [
           {required: true, message: '请输入单价', trigger: 'blur'}
-        ]
+        ],
+        bookDescription: [],
+        authorDescription: []
       },
       bookClassification: process.env.BOOKS_TYPE
     }
@@ -133,7 +147,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           axiosAction.post('/books/update', {
-            id: this.form.id,
+            bookId: this.form.bookId,
             bookName: this.form.bookName,
             bookAuthor: this.form.bookAuthor,
             bookType: this.form.bookType,
@@ -141,7 +155,9 @@ export default {
             bookInventory: this.form.bookInventory,
             bookDate: this.form.bookDate,
             press: this.form.press,
-            unitPrice: this.form.unitPrice
+            unitPrice: this.form.unitPrice,
+            bookDescription: this.form.bookDescription,
+            authorDescription: this.form.authorDescription
           })
             .then(res => {
               this.$message({

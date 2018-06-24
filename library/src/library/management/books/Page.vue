@@ -24,9 +24,14 @@
       <el-table
       :data="booksData"
       class="table"
+      stripe
+      max-height="600"
+      header-align="center"
+      align="center"
       border>
         <el-table-column
-          label="封面">
+          label="封面"
+          width="100">
           <template slot-scope="scope">
             <div style="text-align: center">
               <img :src="scope.row.bookImageUrl" class="book-image">
@@ -72,10 +77,24 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作">
+          label="图书简介">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.bookDescription }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="作者简介">
+          <template slot-scope="scope">
+            <span style="margin-left: 10px">{{ scope.row.authorDescription }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="200">
           <template slot-scope="scope">
             <el-button type="primary" plain @click="update(scope.row)">修改</el-button>
-            <el-button type="danger" plain @click="deleteBooks(scope.row.id)">删除</el-button>
+            <el-button type="danger" plain @click="deleteBooks(scope.row.bookId)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -127,11 +146,12 @@ export default {
       this.$refs[formName].resetFields()
     },
     queryBooksList () {
-      axiosAction.get('/books/query')
+      axiosAction.get('/books/queryBookDetailsList')
         .then(res => {
           for (let i in res.data) {
             res.data[i].bookImageUrl = process.env.BOOK_BASE_URL + res.data[i].bookImageUrl
           }
+          console.log(res.data)
           this.booksData = res.data
         })
         .catch(err => {
@@ -158,10 +178,12 @@ export default {
         })
     },
     update (data) {
+      console.log(data)
       this.currentBooksData = data
       this.showUpdateBooksDialog = true
     },
     deleteBooks (id) {
+      console.log(id)
       this.$confirm('确认删除？')
         .then(() => {
           axiosAction.post('/books/delete', {
@@ -217,7 +239,7 @@ export default {
   text-align: left;
 }
 .table .book-image {
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 80px;
+  max-height: 100px;
 }
 </style>

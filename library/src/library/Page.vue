@@ -15,23 +15,22 @@
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b">
-          <el-menu-item index="1" v-show="userName!==''&&userName!=='root'">
+          <el-menu-item index="1" v-show="userLevel==='1'">
             <i class="el-icon-search"></i>
             <span>图书检索</span>
           </el-menu-item>
-          <el-menu-item index="2" v-show="userName!==''&&userName!=='root'">
+          <el-menu-item index="2" v-show="userLevel==='1'">
             <i class="el-icon-goods"></i>
             <span>我的借阅</span>
           </el-menu-item>
-          <el-menu-item index="6" v-show="userName==='root'">
+          <el-menu-item index="6" v-show="userLevel==='0'">
             <i class="el-icon-setting"></i>
             <span>图书管理</span>
           </el-menu-item>
-          <el-menu-item index="4" v-show="userName==='root'">
+          <el-menu-item index="4" v-show="userLevel==='0'">
             <i class="el-icon-setting"></i>
             <span>读者管理</span>
           </el-menu-item>
-
         </el-menu>
       </el-aside>
       <el-main id="main"><router-view/></el-main>
@@ -45,7 +44,8 @@ export default {
     return {
       defaultActive: '',
       screenHeight: document.body.clientHeight - 60,
-      userName: ''
+      userName: '',
+      userLevel: this.$cookies.get('userLevel')
     }
   },
   mounted () {
@@ -68,7 +68,6 @@ export default {
       } else if (key === '4') {
         this.$router.push('/library/management/users')
       }
-      console.log(key, keyPath)
     },
     currentActive () {
       let path = this.$route.path
@@ -85,6 +84,7 @@ export default {
     logout () {
       this.$cookies.remove('userName', '/')
       this.$cookies.remove('userId', '/')
+      this.$cookies.remove('userLevel', '/')
       this.$router.push('/')
     }
   },

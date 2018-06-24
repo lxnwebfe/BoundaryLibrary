@@ -1,42 +1,52 @@
 <template lang="html">
   <div class="">
     <el-row :gutter="20">
-      <el-col style="width: 200px"><img src="/static/1.jpg" alt=""></el-col>
+      <el-col style="width: 200px"><img :src="bookDetailsData.bookImageUrl" alt="" style="width: 200px;"></el-col>
       <el-col :span="18" class="title">
-        <h2>天才在左疯子在右(完整版)<i>2016年1月1日</i></h2>
-        <p>高铭<span>(作者)</span></p>
+        <h2>{{bookDetailsData.bookName}}<i>{{bookDetailsData.bookDate}}</i></h2>
+        <p>{{bookDetailsData.bookAuthor}}<span>(作者)</span></p>
       </el-col>
     </el-row>
     <el-row>
       <el-col>
-        <h3>作者简介</h3>
-        <p>作者简介作者简介</p>
+        <h3>图书简介</h3>
+        <p>{{bookDetailsData.bookDescription}}</p>
       </el-col>
       <el-col>
         <h3>作者简介</h3>
-        <p>作者简介作者简介</p>
-      </el-col>
-      <el-col>
-        <h3>作者简介</h3>
-        <p>作者简介作者简介</p>
-      </el-col>
-      <el-col>
-        <h3>作者简介</h3>
-        <p>作者简介作者简介</p>
-      </el-col>
-      <el-col>
-        <h3>作者简介</h3>
-        <p>作者简介作者简介</p>
+        <p>{{bookDetailsData.authorDescription}}</p>
       </el-col>
     </el-row>
-    {{this.$route.query.bookId}}
   </div>
 </template>
 
 <script>
+import axiosAction from '@/commonConfig/axiosConfig'
 export default {
   data () {
     return {
+      bookDetailsData: {}
+    }
+  },
+  mounted () {
+    this.queryBookDetails()
+  },
+  methods: {
+    queryBookDetails () {
+      axiosAction.get('/books/queryBookDetails', {
+        params: {
+          bookId: this.$route.query.bookId
+        }
+      })
+        .then(res => {
+          for (let i in res.data) {
+            res.data[i].bookImageUrl = process.env.BOOK_BASE_URL + res.data[i].bookImageUrl
+          }
+          this.bookDetailsData = res.data[0]
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }
