@@ -53,10 +53,7 @@ export default {
         userPsd: this.form.userPsd
       })
         .then(res => {
-          let code = res.data.code
-          if (code !== '400' && code !== '201') {
-            this.$cookies.get('userName') === 'root' ? this.$router.push('/library/management/books') : this.$router.push('/library/books')
-          }
+          this.$cookies.get('userName') === 'root' ? this.$router.push('/library/management/books') : this.$router.push('/library/books')
         })
         .catch(err => console.log(err))
     }

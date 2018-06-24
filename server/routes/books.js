@@ -42,7 +42,7 @@ router.get('/queryBooks', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.query || req.params;
-    connection.query(`SELECT * FROM BOOKS WHERE bookName LIKE "%${param.bookName}%" AND  bookAuthor LIKE "%${param.bookAuthor}%" AND bookType LIKE "%${param.bookType}%"`, function (err, result) {
+    connection.query(`SELECT * FROM BOOKS WHERE bookName LIKE "%${param.bookName}%" AND  bookAuthor LIKE "%${param.bookAuthor}%" AND bookType LIKE "%${param.bookType}%" ORDER BY id DESC`, function (err, result) {
      //以json形式，把操作结果返回给前台页面
      responseJSON(res, result);
      //释放连接

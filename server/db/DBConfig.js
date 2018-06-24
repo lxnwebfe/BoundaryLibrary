@@ -4,6 +4,7 @@ module.exports = {
     user: 'root',
     password: 'root',
     database: 'db_library',
-    port: 3306
+    port: 3306,
+    multipleStatements: true // 开启同时执行多条sql语句
   }
 }

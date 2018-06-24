@@ -44,7 +44,7 @@
         <el-table-column
           label="性别">
           <template slot-scope="scope">
-            <span style="margin-left: 10px">{{ scope.row.sex }}</span>
+            <span style="margin-left: 10px">{{ scope.row.sex === 1 ? '男' : '女'}}</span>
           </template>
         </el-table-column>
         <el-table-column

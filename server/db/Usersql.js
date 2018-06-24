@@ -1,5 +1,5 @@
 var UserSQL = {
-  queryAll: 'SELECT * FROM USER',
+  queryAll: 'SELECT * FROM USER ORDER BY id DESC',
   queryLoginUser: 'SELECT * FROM USER WHERE userName = ? AND userPsd = ?',
   addUser: 'INSERT INTO USER(userName, userPsd) VALUES (?, ?)',
   addUser2: 'INSERT INTO USER(userName, userPsd, sex, phone, idCard, registrDate, userLevel) VALUES (?, ?, ?, ?, ?, ?, ?)',

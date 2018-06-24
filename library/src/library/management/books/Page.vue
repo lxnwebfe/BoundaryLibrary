@@ -66,7 +66,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="单价">
+          label="单价（元）">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.unitPrice }}</span>
           </template>

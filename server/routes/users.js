@@ -45,8 +45,10 @@ router.post('/login', function (req, res, next) {
              code: '-201',
              msg: '登录失败'
            }
+           responseJSON(res, result)
          } else {
-           res.cookie('userName', param.userName, {expires: new Date(Date.now() + 15 * 60 * 1000)});
+           res.cookie('userName', result[0].userName, {expires: new Date(Date.now() + 15 * 60 * 1000)});
+           res.cookie('userId', result[0].id, {expires: new Date(Date.now() + 15 * 60 * 1000)});
            res.end()
          }
        });
@@ -57,7 +59,6 @@ router.post('/login', function (req, res, next) {
         }
         responseJSON(res, result)
       }
-
       connection.release()
     })
   })
@@ -78,24 +79,28 @@ router.post('/register', function (req, res, next) {
     })
   })
 })
-// 用户借阅
+
+// 用户借阅，先查库存
+router.get('/queryBookInventory', function (req, res, next) {
+  pool.getConnection(function (err, connection) {
+    // 获取前台页面传过来的参数
+    var param = req.query || req.params;
+    connection.query(`SELECT bookInventory FROM BOOKS WHERE id="${param.bookId}"`, function (err, result) {
+      responseJSON(res, result);
+      connection.release()
+    });
+  })
+})
 router.post('/borrowing', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     var param = req.body;
-    connection.query(userSQL.addUserBorrow, [
-      param.uid,
-      param.bookName,
-      param.bookAuthor,
-      param.bookType,
-      param.bookImageUrl,
-      param.bookInventory,
-      param.bookDate,
-      param.bookScore
-    ], function (err, result) {
+    connection.query(`INSERT INTO USERBORROWING(uid, bookId, bookName, bookAuthor, bookImageUrl, bookDate) VALUES ("${param.uid}", "${param.bookId}", "${param.bookName}", "${param.bookAuthor}", "${param.bookImageUrl}", "${param.bookDate}");
+      UPDATE BOOKS SET bookInventory=bookInventory-1 WHERE id="${param.bookId}"`, function (err, result) {
+      console.log(err, result)
       if (result) {
         result = {
           code: 200,
-          msg: '增加成功'
+          msg: '借阅成功'
         }
       }
       responseJSON(res, result)
@@ -121,9 +126,8 @@ router.get('/queryUsers', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.query || req.params;
-    connection.query(`SELECT * FROM user WHERE userName LIKE "%${param.userName}%" AND  sex LIKE "%${param.sex}%" AND phone LIKE "%${param.phone}%" AND registrDate LIKE "%${param.registrDate}%"`, function (err, result) {
+    connection.query(`SELECT * FROM user WHERE userName LIKE "%${param.userName}%" AND  sex LIKE "%${param.sex}%" AND phone LIKE "%${param.phone}%" AND registrDate LIKE "%${param.registrDate}%" ORDER BY id DESC`, function (err, result) {
     //以json形式，把操作结果返回给前台页面
-    console.log(result)
     responseJSON(res, result);
     //释放连接
     connection.release()

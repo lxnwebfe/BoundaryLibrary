@@ -1,21 +1,21 @@
 <template lang="html">
   <div>
-    <el-form class="searchForm" inline>
+    <el-form class="searchForm" inline :model="searchForm" :rules="searchFormRules" ref="searchForm">
       <el-row>
-        <el-form-item class="form-item" label="">
+        <el-form-item class="form-item" label="" prop="bookName">
           <el-input v-model="searchForm.bookName" placeholder="请输入图书名称" clearable></el-input>
         </el-form-item>
-        <el-form-item class="form-item" label="">
+        <el-form-item class="form-item" label="" prop="bookAuthor">
           <el-input v-model="searchForm.bookAuthor" placeholder="请输入作者名称" clearable></el-input>
         </el-form-item>
-        <el-form-item class="form-item" label="">
-          <el-select v-model="searchForm.bookClassification" placeholder="请选择图书分类">
+        <el-form-item class="form-item" label="" prop="bookType">
+          <el-select v-model="searchForm.bookType" placeholder="请选择图书分类">
             <el-option v-for="item in bookClassification" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item class="form-item" label="">
-          <el-button type="primary" class="btn">搜索</el-button>
-          <el-button plain class="btn">重置</el-button>
+          <el-button type="primary" class="btn" @click="queryBooks">搜索</el-button>
+          <el-button plain class="btn" @click="resetForm('searchForm')">重置</el-button>
         </el-form-item>
       </el-row>
     </el-form>
@@ -27,8 +27,9 @@
         <p>
           <span>{{item.bookName}} {{item.bookDate}}</span>
           <span>{{item.bookAuthor}}</span>
+          <span>库存：{{item.bookInventory}}</span>
         </p>
-        <el-button type="success" plain @click="openBorrowBox('root', item)">我要借阅</el-button>
+        <el-button type="success" plain @click="openBorrowBox(item)">我要借阅</el-button>
       </el-col>
     </el-row>
     <el-dialog
@@ -37,10 +38,10 @@
       width="30%"
       center>
       <el-form size="mini">
-        <el-form-item label="借阅人：">root</el-form-item>
+        <el-form-item label="借阅人：">{{userName}}</el-form-item>
         <el-form-item label="借阅书籍：">{{borrowBoxData.bookName}}</el-form-item>
         <el-form-item label="借阅数量：">
-          <el-input-number v-model="borrowNum" size="mini" :min="1" :max="3"></el-input-number>
+          <el-input-number v-model="borrowNum" size="mini" :min="1" :max="3" disabled></el-input-number>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -58,70 +59,50 @@ export default {
     return {
       searchForm: {
         bookName: '',
-        bookClassification: ''
+        bookAuthor: '',
+        bookType: ''
+      },
+      searchFormRules: {
+        bookName: [],
+        bookAuthor: [],
+        bookType: []
       },
       showBorrowDialog: false,
+      userName: this.$cookies.get('userName'),
       borrowNum: 1,
       booksData: [],
       borrowBoxData: {},
-      bookClassification: [
-        {
-          label: '文学',
-          value: '1'
-        },
-        {
-          label: '经济管理',
-          value: '2'
-        },
-        {
-          label: '少儿',
-          value: '3'
-        },
-        {
-          label: '人文社科',
-          value: '4'
-        },
-        {
-          label: '生活',
-          value: '5'
-        },
-        {
-          label: '教材教辅考试',
-          value: '6'
-        },
-        {
-          label: '励志与成功',
-          value: '7'
-        },
-        {
-          label: '科技',
-          value: '8'
-        },
-        {
-          label: '生活',
-          value: '9'
-        },
-        {
-          label: '艺术与摄影',
-          value: '10'
-        },
-        {
-          label: '体育',
-          value: '11'
-        },
-        {
-          label: '期刊杂志',
-          value: '12'
-        }
-      ]
+      bookImageUrl: '',
+      bookClassification: process.env.BOOKS_TYPE
     }
   },
   mounted () {
     this.queryBooksList()
   },
   methods: {
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+    },
     queryBooksList () {
       axiosAction.get('/books/query')
+        .then(res => {
+          for (let i in res.data) {
+            res.data[i].bookImageUrl = process.env.BOOK_BASE_URL + res.data[i].bookImageUrl
+          }
+          this.booksData = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    queryBooks () {
+      axiosAction.get('/books/queryBooks', {
+        params: {
+          bookName: this.searchForm.bookName,
+          bookAuthor: this.searchForm.bookAuthor,
+          bookType: this.searchForm.bookType
+        }
+      })
         .then(res => {
           for (let i in res.data) {
             res.data[i].bookImageUrl = process.env.BOOK_BASE_URL + res.data[i].bookImageUrl
@@ -140,38 +121,50 @@ export default {
         }
       })
     },
-    openBorrowBox (userName, item) {
-      this.borrowBoxData = {}
+    openBorrowBox (item) {
       this.borrowBoxData = item
+      const array = this.borrowBoxData.bookImageUrl.split('/')
+      this.bookImageUrl = '/' + array[array.length - 1]
       this.showBorrowDialog = true
+      console.log('当前库存：', this.borrowBoxData.bookInventory)
     },
     borrow () {
-      axiosAction.post('/users/borrowing', {
-        uid: 1,
-        bookName: this.borrowBoxData.bookName,
-        bookAuthor: this.borrowBoxData.bookAuthor,
-        bookType: this.borrowBoxData.bookType,
-        bookImageUrl: this.borrowBoxData.bookImageUrl,
-        bookInventory: this.borrowBoxData.bookInventory,
-        bookDate: this.borrowBoxData.bookDate,
-        bookScore: this.borrowNum
-      }).then(res => {
-        let data = res.data
-        if (data.code === '200') {
-          this.$message({
-            message: '借阅成功',
-            type: 'success'
-          })
-          this.showBorrowDialog = false
+      axiosAction.get('/users/queryBookInventory', {
+        params: {
+          bookId: this.borrowBoxData.id
         }
-      }).catch(err => {
-        console.log(err)
       })
-      // this.$message({
-      //   message: '借阅成功',
-      //   type: 'success'
-      // })
-      // this.showBorrowDialog = false
+        .then(res => {
+          let data = res.data[0]
+          if (data.bookInventory > 0) {
+            axiosAction.post('/users/borrowing', {
+              uid: this.$cookies.get('userId'),
+              bookId: this.borrowBoxData.id,
+              bookName: this.borrowBoxData.bookName,
+              bookAuthor: this.borrowBoxData.bookAuthor,
+              bookImageUrl: this.bookImageUrl,
+              bookDate: this.borrowBoxData.bookDate
+            }).then(res => {
+              let data = res.data
+              console.log(data)
+              if (data.code === 200) {
+                this.$message({
+                  message: '借阅成功',
+                  type: 'success'
+                })
+                this.showBorrowDialog = false
+                this.queryBooksList()
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+          } else {
+            this.$message.error('暂无库存')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }

@@ -34,10 +34,10 @@
               <i class="el-icon-setting"></i>
               <span>读者管理</span>
             </el-menu-item>
-            <el-menu-item index="2">
+            <!-- <el-menu-item index="2">
               <i class="el-icon-setting"></i>
               <span>系统管理</span>
-            </el-menu-item>
+            </el-menu-item> -->
           </template>
 
         </el-menu>
