@@ -1,7 +1,7 @@
 var UserSQL = {
   queryAll: 'SELECT * FROM USER ORDER BY id DESC',
   queryLoginUser: 'SELECT * FROM USER WHERE userName=? AND userPsd=?',
-  addUser: 'INSERT INTO USER(userName, userPsd) VALUES (?, ?)',
+  addUser: 'INSERT INTO USER(userName, userPsd, userLevel) VALUES (?, ?, 1)',
   addUser2: 'INSERT INTO USER(userName, userPsd, sex, phone, idCard, registrDate, userLevel) VALUES (?, ?, ?, ?, ?, ?, ?)',
   addUserBorrow: 'INSERT INTO USERBORROWING(uid, bookName, bookAuthor, bookType, bookImageUrl, bookInventory, bookDate, bookScore) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
   updateUser: 'UPDATE USER SET userName=?, userPsd=?, sex=?, phone=?, idCard=? WHERE id=?',

@@ -68,15 +68,28 @@ router.post('/login', function (req, res, next) {
 router.post('/register', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     var param = req.body;
-    connection.query(userSQL.addUser, [param.userName, param.userPsd], function (err, result) {
-      if (result) {
+    connection.query(`SELECT * FROM USER WHERE userName="${param.userName}"`, function (err, result) {
+      console.log(err, result)
+      if (result.length>0) {
         result = {
-          code: 200,
-          msg: '增加成功'
+          code: '401',
+          msg: '用户名重复'
         }
+        responseJSON(res, result)
+        connection.release()
+      } else {
+        connection.query(`INSERT INTO USER(userName, userPsd, userLevel) VALUES ("${param.userName}", "${param.userPsd}", 1)`, function (err, result) {
+          connection.query(`SELECT id, userName, userLevel FROM USER WHERE userName="${param.userName}" AND "${param.userPsd}"`, function (err, result) {
+            if (result) {
+              res.cookie('userName', result[0].userName, {expires: new Date(Date.now() + 15 * 60 * 1000)});
+              res.cookie('userId', result[0].id, {expires: new Date(Date.now() + 15 * 60 * 1000)});
+              res.cookie('userLevel', result[0].userLevel, {expires: new Date(Date.now() + 15 * 60 * 1000)});
+              res.end()
+            }
+            connection.release()
+          })
+        })
       }
-      responseJSON(res, result)
-      connection.release()
     })
   })
 })
