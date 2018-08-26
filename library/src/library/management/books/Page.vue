@@ -30,6 +30,7 @@
       align="center"
       border>
         <el-table-column
+          fixed
           label="封面"
           width="100">
           <template slot-scope="scope">
@@ -77,12 +78,14 @@
           </template>
         </el-table-column>
         <el-table-column
+          width="400"
           label="图书简介">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.bookDescription }}</span>
           </template>
         </el-table-column>
         <el-table-column
+          width="400"
           label="作者简介">
           <template slot-scope="scope">
             <span style="margin-left: 10px">{{ scope.row.authorDescription }}</span>

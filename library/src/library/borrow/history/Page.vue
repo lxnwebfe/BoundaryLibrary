@@ -97,4 +97,8 @@ export default {
 </script>
 
 <style lang="css">
+.table .book-image {
+  max-width: 80px;
+  max-height: 100px;
+}
 </style>

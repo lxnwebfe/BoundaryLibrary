@@ -2,7 +2,7 @@
   <el-row>
     <template v-if="isBorrowingBooks">
       <el-col :span="6" v-for="item in borrowingDataList" :key="item.id" class="results">
-        <div @click="enterDetail(item.id)">
+        <div @click="enterDetail(item.bookId)">
           <img :src="item.bookImageUrl" alt="" ondragstart="return false">
         </div>
         <p>

@@ -6,7 +6,7 @@
           <BorrowingPage/>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="预订图书" name="third">预订图书</el-tab-pane>
+      <!-- <el-tab-pane label="预订图书" name="third">预订图书</el-tab-pane> -->
       <el-tab-pane label="借阅历史" name="second">
         <div style="margin-top: 46px;">
           <BorrowHistoryPage />

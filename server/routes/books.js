@@ -83,7 +83,9 @@ router.post('/add', function (req, res, next) {
     // 获取前台页面传过来的参数
     var param = req.body;
     connection.query(`INSERT INTO BOOKS(bookName, bookAuthor, bookType, bookImageUrl, bookInventory, bookDate, press, unitPrice, bookScore) VALUES ("${param.bookName}", "${param.bookAuthor}", "${param.bookType}", "${param.bookImageUrl}", "${param.bookInventory}", "${param.bookDate}", "${param.press}", "${param.unitPrice}", 0);
-      INSERT INTO BOOKDETAILS(bookId, bookDescription, authorDescription) SELECT id, "${param.bookDescription}", "${param.authorDescription}" FROM BOOKS WHERE id=(SELECT id FROM BOOKS WHERE bookImageUrl="${param.bookImageUrl}")`, function (err, result) {
+    INSERT INTO BOOKDETAILS(bookId, bookDescription, authorDescription)
+    SELECT id, "${param.bookDescription}", "${param.authorDescription}" FROM BOOKS
+    WHERE id=(SELECT id FROM BOOKS WHERE bookImageUrl="${param.bookImageUrl}")`, function (err, result) {
       console.log(err, result)
       if(result) {
         result = {
@@ -107,8 +109,7 @@ router.post('/update', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.body;
-    connection.query(`UPDATE BOOKS SET bookName="${param.bookName}", bookAuthor="${param.bookAuthor}", bookType="${param.bookType}", bookImageUrl="${param.bookImageUrl}", bookInventory="${param.bookInventory}", bookDate="${param.bookDate}", press="${param.press}", unitPrice="${param.unitPrice}" WHERE id="${param.bookId}";
-      UPDATE BOOKDETAILS SET bookDescription="${param.bookDescription}", authorDescription="${param.authorDescription}" WHERE bookId="${param.bookId}"`, function (err, result) {
+    connection.query(`UPDATE BOOKS SET bookName="${param.bookName}", bookAuthor="${param.bookAuthor}", bookType="${param.bookType}", bookImageUrl="${param.bookImageUrl}", bookInventory="${param.bookInventory}", bookDate="${param.bookDate}", press="${param.press}", unitPrice="${param.unitPrice}" WHERE id="${param.bookId}";UPDATE BOOKDETAILS SET bookDescription="${param.bookDescription}", authorDescription="${param.authorDescription}" WHERE bookId="${param.bookId}"`, function (err, result) {
         console.log(err, result)
       if(result) {
         result = {
