@@ -20,17 +20,22 @@
       </el-row>
     </el-form>
     <el-row class="content" :gutter="20">
-      <el-col :span="6" v-for="item in booksData" :key="item.id" class="results">
-        <div @click="enterDetail(item.id)">
-          <img :src="item.bookImageUrl" alt="" ondragstart="return false">
-        </div>
-        <p>
-          <span>{{item.bookName}} {{item.bookDate}}</span>
-          <span>{{item.bookAuthor}}</span>
-          <span>库存：{{item.bookInventory}}</span>
-        </p>
-        <el-button type="success" plain @click="openBorrowBox(item)">我要借阅</el-button>
-      </el-col>
+      <template v-if="booksData.length <= 0">
+        <el-col :span="6" class="results">暂无数据</el-col>
+      </template>
+      <template v-else>
+        <el-col :span="6" v-for="item in booksData" :key="item.id" class="results">
+          <div @click="enterDetail(item.id)">
+            <img :src="item.bookImageUrl" alt="" ondragstart="return false">
+          </div>
+          <p>
+            <span>{{item.bookName}} {{item.bookDate}}</span>
+            <span>{{item.bookAuthor}}</span>
+            <span>库存：{{item.bookInventory}}</span>
+          </p>
+          <el-button type="success" plain @click="openBorrowBox(item)">我要借阅</el-button>
+        </el-col>
+      </template>
     </el-row>
     <el-dialog
       title="我要借阅"

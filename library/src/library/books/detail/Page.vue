@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="">
     <el-row :gutter="20">
-      <el-col style="width: 200px"><img :src="bookDetailsData.bookImageUrl" alt="" style="width: 200px;"></el-col>
+      <el-col style="width: 200px"><img :src="bookDetailsData.bookImageUrl" alt="" style="width: 100%;"></el-col>
       <el-col :span="18" class="title">
         <h2>{{bookDetailsData.bookName}}<i>{{bookDetailsData.bookDate}}</i></h2>
         <p>{{bookDetailsData.bookAuthor}}<span>(作者)</span></p>

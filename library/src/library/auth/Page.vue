@@ -43,6 +43,7 @@
 <script>
 import Parallax from 'parallax-js'
 import axiosAction from '@/commonConfig/axiosConfig'
+import myDate from '@/commonConfig/date'
 export default {
   data () {
     var validatePass = (rule, value, callback) => {
@@ -151,7 +152,8 @@ export default {
         if (valid) {
           axiosAction.post('/users/register', {
             userName: this.form2.registerUserName,
-            userPsd: this.form2.registerUserPsd
+            userPsd: this.form2.registerUserPsd,
+            registrDate: myDate.year + '-' + myDate.month + '-' + myDate.day
           })
             .then(res => {
               let code = res.data.code
