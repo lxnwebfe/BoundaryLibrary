@@ -18,7 +18,7 @@ router.post('/upload', function (req, res, next) {
   var form = new formidable.IncomingForm({
     encoding: 'utf-8',
     uploadDir: '/BoundaryLibrary/server/public/images',
-    keepExtensions:true
+    keepExtensions:true //保存扩展名
   })
   form.parse(req, function(err, fields, files) {
     var obj ={};

@@ -78,8 +78,8 @@ router.post('/register', function (req, res, next) {
         responseJSON(res, result)
         connection.release()
       } else {
-        connection.query(`INSERT INTO USER(userName, userPsd, userLevel) VALUES ("${param.userName}", "${param.userPsd}", 1)`, function (err, result) {
-          connection.query(`SELECT id, userName, userLevel FROM USER WHERE userName="${param.userName}" AND "${param.userPsd}"`, function (err, result) {
+        connection.query(`INSERT INTO USER(userName, userPsd, registrDate, userLevel) VALUES ("${param.userName}", "${param.userPsd}", "${param.registrDate}", 1)`, function (err, result) {
+          connection.query(`SELECT id, userName, userLevel FROM USER WHERE userName="${param.userName}" AND userPsd="${param.userPsd}"`, function (err, result) {
             if (result) {
               res.cookie('userName', result[0].userName, {expires: new Date(Date.now() + 15 * 60 * 1000)});
               res.cookie('userId', result[0].id, {expires: new Date(Date.now() + 15 * 60 * 1000)});
@@ -246,7 +246,10 @@ router.post('/delete', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     // 获取前台页面传过来的参数
     var param = req.body;
-    connection.query(userSQL.deleteUser, [param.id], function (err, result) {
+    // 删除有外键约束的数据时，需要先关闭外键约束，删除之后再启动约束
+    connection.query(`set foreign_key_checks = 0;
+        DELETE FROM USER WHERE id=${param.id};
+        set foreign_key_checks = 1`, function (err, result) {
       if(result) {
         result = {
           code: 200,

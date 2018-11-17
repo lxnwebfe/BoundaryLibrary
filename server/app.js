@@ -56,21 +56,21 @@ app.use(session({
 }));
 
 // 登录接口
-app.post('/login', function(req, res, next){
-  var user = 1
-  if(user){
-    req.session.regenerate(function(err) {
-      if(err){
-        return res.json({ret_code: 2, ret_msg: '登录失败'});
-      }
-      req.session.userName = req.body.userName
-      console.log(req.session)
-      res.json({ret_code: 0, ret_msg: '登录成功'});
-    });
-  }else{
-    res.json({ret_code: 1, ret_msg: '账号或密码错误'});
-  }
-});
+// app.post('/login', function(req, res, next){
+//   var user = 1
+//   if(user){
+//     req.session.regenerate(function(err) {
+//       if(err){
+//         return res.json({ret_code: 2, ret_msg: '登录失败'});
+//       }
+//       req.session.userName = req.body.userName
+//       console.log(req.session)
+//       res.json({ret_code: 0, ret_msg: '登录成功'});
+//     });
+//   }else{
+//     res.json({ret_code: 1, ret_msg: '账号或密码错误'});
+//   }
+// });
 
 
 // catch 404 and forward to error handler
